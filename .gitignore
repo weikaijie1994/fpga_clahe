@@ -1,0 +1,6 @@
+.apc/
+.settings/*.launch
+solution1
+.project
+.cproject
+*.app
