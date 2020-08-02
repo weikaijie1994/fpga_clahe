@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vivadoHLSLog:LogRoot xmlns:vivadoHLSLog="www.xilinx.com/vivadoHLSLog">
+  <errorLogs>
+    <logs>
+      <synLog/>
+      <simLog/>
+      <mgLog/>
+      <packageLog/>
+      <csimLog/>
+    </logs>
+  </errorLogs>
+  <warningLogs>
+    <logs>
+      <synLog>
+        <logs message="WARNING: [RTGEN 206-101] Port 'clahe_top/src_TLAST' has no fanin or fanout and is left dangling.&#xA;               Please use C simulation to confirm this function argument can be read from or written to." projectName="clahe_fpga" solutionName="solution1" date="2020-08-03T08:42:49.123+0900" type="Warning"/>
+        <logs message="WARNING: [SCHED 204-68] The II Violation in module 'calc_lut_body_stream' (Loop: resdistribute2): Unable to enforce a carried dependence constraint (II = 1, distance = 1, offset = 1)&#xA;   between 'store' operation ('tileHist_V_addr_6_write_ln312', clahe_fpga/.settings/clahe.cpp:312) of variable 'add_ln214', clahe_fpga/.settings/clahe.cpp:312 on array 'tileHist.V', clahe_fpga/.settings/clahe.cpp:254 and 'load' operation ('oldval.V', clahe_fpga/.settings/clahe.cpp:314) on array 'tileHist.V', clahe_fpga/.settings/clahe.cpp:254." projectName="clahe_fpga" solutionName="solution1" date="2020-08-03T08:42:23.033+0900" type="Warning"/>
+        <logs message="WARNING: [SCHED 204-68] The II Violation in module 'calc_lut_body_stream' (Loop: make_histogram): Unable to enforce a carried dependence constraint (II = 1, distance = 1, offset = 1)&#xA;   between 'store' operation ('tileHist_V_addr_2_write_ln278', clahe_fpga/.settings/clahe.cpp:278) of constant 209 on array 'tileHist.V', clahe_fpga/.settings/clahe.cpp:254 and 'load' operation ('tileHist_V_load', clahe_fpga/.settings/clahe.cpp:283) on array 'tileHist.V', clahe_fpga/.settings/clahe.cpp:254." projectName="clahe_fpga" solutionName="solution1" date="2020-08-03T08:42:23.006+0900" type="Warning"/>
+        <logs message="WARNING: [ANALYSIS 214-52] Found false 'RAW' intra dependency for variable 'tileHist.V' (clahe_fpga/.settings/clahe.cpp:254)." projectName="clahe_fpga" solutionName="solution1" date="2020-08-03T08:42:20.839+0900" type="Warning"/>
+        <logs message="WARNING: [XFORM 203-631] Renaming function 'dataflow_in_loop_outer' to 'dataflow_in_loop_out' (clahe_fpga/.settings/clahe.cpp:225:3)" projectName="clahe_fpga" solutionName="solution1" date="2020-08-03T08:42:19.389+0900" type="Warning"/>
+        <logs message="WARNING: [XFORM 203-542] Cannot flatten a loop nest 'body' (clahe_fpga/.settings/clahe.cpp:408:55) in function 'interpolation_stream' : &#xA;&#xA;&#xA;more than one sub loop." projectName="clahe_fpga" solutionName="solution1" date="2020-08-03T08:42:18.503+0900" type="Warning"/>
+        <logs message="WARNING: [XFORM 203-1103] Ignored data pack directive on non-struct variable 'src.data.V' (clahe_fpga/.settings/clahe.cpp:493)." projectName="clahe_fpga" solutionName="solution1" date="2020-08-03T08:42:14.921+0900" type="Warning"/>
+        <logs message="WARNING: [XFORM 203-1103] Ignored data pack directive on non-struct variable 'dst.data.V' (clahe_fpga/.settings/clahe.cpp:493)." projectName="clahe_fpga" solutionName="solution1" date="2020-08-03T08:42:14.244+0900" type="Warning"/>
+        <logs message="WARNING: [HLS 200-471] Dataflow form checks found 1 issue(s) in file clahe_fpga/.settings/clahe.cpp" projectName="clahe_fpga" solutionName="solution1" date="2020-08-03T08:39:10.163+0900" type="Warning"/>
+        <logs message="WARNING: [HLS 214-111] Streams will behave like static variables inside a dataflow region: clahe_fpga/.settings/clahe.cpp:503:29" projectName="clahe_fpga" solutionName="solution1" date="2020-08-03T08:38:43.263+0900" type="Warning"/>
+      </synLog>
+      <simLog/>
+      <mgLog/>
+      <packageLog/>
+      <csimLog/>
+    </logs>
+  </warningLogs>
+</vivadoHLSLog:LogRoot>

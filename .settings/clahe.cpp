@@ -165,6 +165,24 @@ stream_u8 &src_buf
 		}
 	}
 }
+
+void axis2stream(
+axis_t *src,
+stream_u8 &st,
+stream_u8 &src_buf
+)
+{
+#pragma HLS inline off
+	for (int i = 0; i < HEIGHT; i++) {
+		for (int j = 0; j < WIDTH; j++) {
+#pragma HLS pipeline
+#pragma HLS loop_flatten off
+			unsigned char tmp =  src[i*WIDTH + j].data;
+			st << tmp;
+			src_buf << tmp;
+		}
+	}
+}
 void calc_lut_stream(
 stream_u8 &st0,
 stream_u8 &st1,
@@ -275,7 +293,7 @@ int clipLimit
 		}
 
 			//redistribute clipped pixel
-			int redistBatch = clipped / F_HISTSIZE;
+			HIST redistBatch = clipped / F_HISTSIZE;
 			int residual = clipped - redistBatch * F_HISTSIZE;
 
 			redistribute: for (LOOP i = 0; i < F_HISTSIZE; ++i) {
@@ -308,6 +326,7 @@ int clipLimit
 					lut << saturate_cast(sum * lutScale);
 			}
 }
+
 
 void interpolation_stream(stream_u8 &src, stream_u8 &dst,
 stream_u8 &lut0,
@@ -472,8 +491,8 @@ void stream2axis(stream_u8 &dst_in, axis_t *dst) {
 
 
 void clahe_top(axis_t *src, axis_t *dst) {
-#pragma HLS INTERFACE axis port=src depth=1080*1080 // Added depth for C/RTL cosimulation
-#pragma HLS INTERFACE axis port=dst depth=1080*1080 // Added depth for C/RTL cosimulation
+#pragma HLS INTERFACE axis port=src depth=1920*1080 // Added depth for C/RTL cosimulation
+#pragma HLS INTERFACE axis port=dst depth=1920*1080 // Added depth for C/RTL cosimulation
 #pragma HLS INTERFACE s_axilite port=return
 
 	const int tileSizeTotal = F_tileWIDTH* F_tileHEIGHT;
@@ -487,7 +506,7 @@ void clahe_top(axis_t *src, axis_t *dst) {
 						lut12, lut13, lut14, lut15;
 	stream_u8 src_buf("src_buf");
 	stream_u8 dst_stream("dst_stream");
-
+/*
 #pragma HLS stream variable=st0 depth=1080*90
 #pragma HLS stream variable=st1 depth=1080*90
 #pragma HLS stream variable=st2 depth=1080*90
@@ -504,8 +523,8 @@ void clahe_top(axis_t *src, axis_t *dst) {
 #pragma HLS stream variable=st13 depth=1080*90
 #pragma HLS stream variable=st14 depth=1080*90
 #pragma HLS stream variable=st15 depth=1080*90
-
-
+*/
+/*
 #pragma HLS stream variable=lut0 depth=16*256
 #pragma HLS stream variable=lut1 depth=16*256
 #pragma HLS stream variable=lut2 depth=16*256
@@ -522,9 +541,9 @@ void clahe_top(axis_t *src, axis_t *dst) {
 #pragma HLS stream variable=lut13 depth=16*256
 #pragma HLS stream variable=lut14 depth=16*256
 #pragma HLS stream variable=lut15 depth=16*256
-
-#pragma HLS stream variable=src_buf depth=1080*1920
-//#pragma HLS stream variable=dst_stream depth=1080*1080
+*/
+#pragma HLS stream variable=src_buf depth=1920*135
+//#pragma HLS stream variable=dst_stream depth=1920*135
 
 #pragma HLS dataflow
 	f_prepare_buf(ind1_p, ind2_p, xa_p, xa1_p);
@@ -582,6 +601,29 @@ void clahe_top(axis_t *src, axis_t *dst) {
 			lut14,
 			lut15,
 	clipLimit);
+
+	/*
+	axis2stream(src,st0,src_buf);
+	calc_lut_stream_re(
+				st0,
+				lut0,
+				lut1,
+				lut2,
+				lut3,
+				lut4,
+				lut5,
+				lut6,
+				lut7,
+				lut8,
+				lut9,
+				lut10,
+				lut11,
+				lut12,
+				lut13,
+				lut14,
+				lut15,
+		clipLimit);
+		*/
 	interpolation_stream(src_buf, dst_stream,
 			lut0,
 			lut1,

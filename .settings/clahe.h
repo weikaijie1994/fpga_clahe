@@ -15,7 +15,7 @@ struct axis_t {
 #define stream_u8 hls::stream<unsigned char>
 
 typedef ap_uint<16> HIST;
-typedef ap_uint<16> LOOP;
+typedef ap_uint<18> LOOP;
 
 void f_prepare_buf(int* ind1_p, int* ind2_p, float *xa_p, float *xa1_p);
 unsigned char saturate_cast(float v);
@@ -98,4 +98,5 @@ stream_u8 &lut15,
 int *ind1_p, int *ind2_p, float *xa_p, float *xa1_p);
 void stream2axis(stream_u8 &dst_in, axis_t *dst);
 void clahe_top(axis_t *src, axis_t *dst);
+
 #endif
