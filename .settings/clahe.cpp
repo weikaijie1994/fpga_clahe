@@ -506,44 +506,8 @@ void clahe_top(axis_t *src, axis_t *dst) {
 						lut12, lut13, lut14, lut15;
 	stream_u8 src_buf("src_buf");
 	stream_u8 dst_stream("dst_stream");
-/*
-#pragma HLS stream variable=st0 depth=1080*90
-#pragma HLS stream variable=st1 depth=1080*90
-#pragma HLS stream variable=st2 depth=1080*90
-#pragma HLS stream variable=st3 depth=1080*90
-#pragma HLS stream variable=st4 depth=1080*90
-#pragma HLS stream variable=st5 depth=1080*90
-#pragma HLS stream variable=st6 depth=1080*90
-#pragma HLS stream variable=st7 depth=1080*90
-#pragma HLS stream variable=st8 depth=1080*90
-#pragma HLS stream variable=st9 depth=1080*90
-#pragma HLS stream variable=st10 depth=1080*90
-#pragma HLS stream variable=st11 depth=1080*90
-#pragma HLS stream variable=st12 depth=1080*90
-#pragma HLS stream variable=st13 depth=1080*90
-#pragma HLS stream variable=st14 depth=1080*90
-#pragma HLS stream variable=st15 depth=1080*90
-*/
-/*
-#pragma HLS stream variable=lut0 depth=16*256
-#pragma HLS stream variable=lut1 depth=16*256
-#pragma HLS stream variable=lut2 depth=16*256
-#pragma HLS stream variable=lut3 depth=16*256
-#pragma HLS stream variable=lut4 depth=16*256
-#pragma HLS stream variable=lut5 depth=16*256
-#pragma HLS stream variable=lut6 depth=16*256
-#pragma HLS stream variable=lut7 depth=16*256
-#pragma HLS stream variable=lut8 depth=16*256
-#pragma HLS stream variable=lut9 depth=16*256
-#pragma HLS stream variable=lut10 depth=16*256
-#pragma HLS stream variable=lut11 depth=16*256
-#pragma HLS stream variable=lut12 depth=16*256
-#pragma HLS stream variable=lut13 depth=16*256
-#pragma HLS stream variable=lut14 depth=16*256
-#pragma HLS stream variable=lut15 depth=16*256
-*/
+
 #pragma HLS stream variable=src_buf depth=1920*135
-//#pragma HLS stream variable=dst_stream depth=1920*135
 
 #pragma HLS dataflow
 	f_prepare_buf(ind1_p, ind2_p, xa_p, xa1_p);
@@ -602,28 +566,6 @@ void clahe_top(axis_t *src, axis_t *dst) {
 			lut15,
 	clipLimit);
 
-	/*
-	axis2stream(src,st0,src_buf);
-	calc_lut_stream_re(
-				st0,
-				lut0,
-				lut1,
-				lut2,
-				lut3,
-				lut4,
-				lut5,
-				lut6,
-				lut7,
-				lut8,
-				lut9,
-				lut10,
-				lut11,
-				lut12,
-				lut13,
-				lut14,
-				lut15,
-		clipLimit);
-		*/
 	interpolation_stream(src_buf, dst_stream,
 			lut0,
 			lut1,
