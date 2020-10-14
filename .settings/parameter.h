@@ -1,8 +1,8 @@
 #ifndef _PARAMETER_CONFIG_
 #define _PARAMETER_CONFIG_
 
-#define HEIGHT 1920
-#define WIDTH 1080
+#define HEIGHT 1080
+#define WIDTH 1920
 
 #define F_tilesX 16
 #define F_tilesY 12
