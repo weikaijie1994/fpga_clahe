@@ -388,9 +388,10 @@ stream_u8 &lut13,
 stream_u8 &lut14,
 stream_u8 &lut15,
 int *ind1_p, int *ind2_p, float *xa_p, float *xa1_p) {
+	const int buf_num = 3;
 	const float inv_th = 1.0f / F_tileHEIGHT;
 	//buf[0][][]: A, buf[1][][]: B, buf[2][][]: C
-	unsigned char buf[3][F_tilesX][F_HISTSIZE];
+	unsigned char buf[buf_num][F_tilesX][F_HISTSIZE];
 
 #pragma HLS array_partition variable=buf complete dim=1
 #pragma HLS array_partition variable=buf complete dim=2
@@ -406,7 +407,7 @@ int *ind1_p, int *ind2_p, float *xa_p, float *xa1_p) {
 
 	//////////////prologue start /////////////////////////////
 	//////////////update tmp ///////////////////////
-	tmp1 = _tmp%3;
+	tmp1 = _tmp%buf_num;
 	//////////////update tmp ///////////////////////
 	prologue_data_in: for (int x = 0; x < F_HISTSIZE; ++x) {
 #pragma HLS pipeline
@@ -451,7 +452,7 @@ int *ind1_p, int *ind2_p, float *xa_p, float *xa1_p) {
 			//////////////update tmp ///////////////////////
 			_tmp++;
 			tmp2 = tmp1;
-			tmp1 = _tmp%3;
+			tmp1 = _tmp%buf_num;
 			//////////////update tmp ///////////////////////
 			body_data_in: for (int x = 0; x < F_HISTSIZE; ++x) {
 			#pragma HLS pipeline
@@ -509,9 +510,151 @@ int *ind1_p, int *ind2_p, float *xa_p, float *xa1_p) {
 						dst << saturate_cast(res);
 					}
 			}
-		//////////////epilogue start  /////////////////////////////
+		//////////////epilogue end  /////////////////////////////
 }
 
+void interpolation_stream_2buf(stream_u8 &src, stream_u8 &dst,
+stream_u8 &lut0,
+stream_u8 &lut1,
+stream_u8 &lut2,
+stream_u8 &lut3,
+stream_u8 &lut4,
+stream_u8 &lut5,
+stream_u8 &lut6,
+stream_u8 &lut7,
+stream_u8 &lut8,
+stream_u8 &lut9,
+stream_u8 &lut10,
+stream_u8 &lut11,
+stream_u8 &lut12,
+stream_u8 &lut13,
+stream_u8 &lut14,
+stream_u8 &lut15,
+int *ind1_p, int *ind2_p, float *xa_p, float *xa1_p) {
+	const int buf_num = 2;
+	const float inv_th = 1.0f / F_tileHEIGHT;
+	//buf[0][][]: A, buf[1][][]: B, buf[2][][]: C
+	unsigned char buf[buf_num][F_tilesX][F_HISTSIZE];
+
+#pragma HLS array_partition variable=buf complete dim=1
+#pragma HLS array_partition variable=buf complete dim=2
+
+	unsigned char srcVal;
+	////////// yy is col's index /////////////////////
+	int yy = 0;
+	////////// yy is col's index /////////////////////
+
+	/// tmp is buf's index
+	int _tmp = 0;
+	int tmp1, tmp2;
+
+	//////////////prologue start /////////////////////////////
+	//////////////update tmp ///////////////////////
+	tmp1 = _tmp%buf_num;
+	//////////////update tmp ///////////////////////
+	prologue_data_in: for (int x = 0; x < F_HISTSIZE; ++x) {
+#pragma HLS pipeline
+		lut0 >> buf[tmp1][0][x];
+		lut1 >> buf[tmp1][1][x];
+		lut2 >> buf[tmp1][2][x];
+		lut3 >> buf[tmp1][3][x];
+		lut4 >> buf[tmp1][4][x];
+		lut5 >> buf[tmp1][5][x];
+		lut6 >> buf[tmp1][6][x];
+		lut7 >> buf[tmp1][7][x];
+		lut8 >> buf[tmp1][8][x];
+		lut9 >> buf[tmp1][9][x];
+		lut10 >> buf[tmp1][10][x];
+		lut11 >> buf[tmp1][11][x];
+		lut12 >> buf[tmp1][12][x];
+		lut13 >> buf[tmp1][13][x];
+		lut14 >> buf[tmp1][14][x];
+		lut15 >> buf[tmp1][15][x];
+	}
+	prologue_calc: for (int y = 0; y < F_tileHEIGHT/2; ++y, ++yy) {
+		float tyf = yy * inv_th - 0.5f;
+
+		int ty1 = floor(tyf);
+
+		float ya = tyf - ty1, ya1 = 1.0f - ya;
+		for (int x = 0; x < WIDTH; ++x) {
+#pragma HLS pipeline
+			src >> srcVal;
+			int ind1 = ind1_p[x];
+			int ind2 = ind2_p[x];
+
+			float res = (buf[tmp1][ind1][srcVal] * xa1_p[x] + buf[tmp1][ind2][srcVal] * xa_p[x]);
+
+			dst << saturate_cast(res);
+		}
+	}
+		//////////////prologue end /////////////////////////////
+
+		//////////////body start   /////////////////////////////
+		body: for (int i = 0; i < HEIGHT/F_tileHEIGHT-1; ++i) {
+			//////////////update tmp ///////////////////////
+			_tmp++;
+			tmp2 = tmp1;
+			tmp1 = _tmp%buf_num;
+			//////////////update tmp ///////////////////////
+			body_data_in: for (int x = 0; x < F_HISTSIZE; ++x) {
+			#pragma HLS pipeline
+				lut0 >> buf[tmp1][0][x];
+				lut1 >> buf[tmp1][1][x];
+				lut2 >> buf[tmp1][2][x];
+				lut3 >> buf[tmp1][3][x];
+				lut4 >> buf[tmp1][4][x];
+				lut5 >> buf[tmp1][5][x];
+				lut6 >> buf[tmp1][6][x];
+				lut7 >> buf[tmp1][7][x];
+				lut8 >> buf[tmp1][8][x];
+				lut9 >> buf[tmp1][9][x];
+				lut10 >> buf[tmp1][10][x];
+				lut11 >> buf[tmp1][11][x];
+				lut12 >> buf[tmp1][12][x];
+				lut13 >> buf[tmp1][13][x];
+				lut14 >> buf[tmp1][14][x];
+				lut15 >> buf[tmp1][15][x];
+			}
+			body_calc: for (int y = 0; y < F_tileHEIGHT; ++y, ++yy) {
+					float tyf = yy * inv_th - 0.5f;
+
+					int ty1 = floor(tyf);
+
+					float ya = tyf - ty1, ya1 = 1.0f - ya;
+					for (int x = 0; x < WIDTH; ++x) {
+			#pragma HLS pipeline
+						src >> srcVal;
+						int ind1 = ind1_p[x];
+						int ind2 = ind2_p[x];
+
+						float res = (buf[tmp2][ind1][srcVal] * xa1_p[x] + buf[tmp2][ind2][srcVal] * xa_p[x]) * ya1
+									+ (buf[tmp1][ind1][srcVal] * xa1_p[x] + buf[tmp1][ind2][srcVal] * xa_p[x]) * ya;
+
+						dst << saturate_cast(res);
+					}
+			}
+		}
+		//////////////body end   /////////////////////////////
+		//////////////epilogue start  /////////////////////////////
+		epilogue_calc: for (int y = 0; y < F_tileHEIGHT/2; ++y, ++yy) {
+				float tyf = yy * inv_th - 0.5f;
+				int ty1 = floor(tyf);
+				float ya = tyf - ty1, ya1 = 1.0f - ya;
+
+				for (int x = 0; x < WIDTH; ++x) {
+		#pragma HLS pipeline
+						src >> srcVal;
+						int ind1 = ind1_p[x];
+						int ind2 = ind2_p[x];
+
+						float res = (buf[tmp1][ind1][srcVal] * xa1_p[x] + buf[tmp1][ind2][srcVal] * xa_p[x]);
+
+						dst << saturate_cast(res);
+					}
+			}
+		//////////////epilogue end  /////////////////////////////
+}
 void stream2axis(stream_u8 &dst_in, axis_t *dst) {
 #pragma HLS inline off
 	for (int i = 0; i < HEIGHT; i++) {
@@ -549,7 +692,25 @@ void clahe_top(axis_t *src, axis_t *dst) {
 	stream_u8 src_buf("src_buf");
 	stream_u8 dst_stream("dst_stream");
 
+#pragma HLS stream variable=st0 depth=180
+#pragma HLS stream variable=st1 depth=180
+#pragma HLS stream variable=st2 depth=180
+#pragma HLS stream variable=st3 depth=180
+#pragma HLS stream variable=st4 depth=180
+#pragma HLS stream variable=st5 depth=180
+#pragma HLS stream variable=st6 depth=180
+#pragma HLS stream variable=st7 depth=180
+#pragma HLS stream variable=st8 depth=180
+#pragma HLS stream variable=st9 depth=180
+#pragma HLS stream variable=st10 depth=180
+#pragma HLS stream variable=st11 depth=180
+#pragma HLS stream variable=st12 depth=180
+#pragma HLS stream variable=st13 depth=180
+#pragma HLS stream variable=st14 depth=180
+#pragma HLS stream variable=st15 depth=180
+
 #pragma HLS stream variable=src_buf depth=1920*135
+//#pragma HLS stream variable=src_buf depth=1920*270
 
 #pragma HLS dataflow
 	f_prepare_buf(ind1_p, ind2_p, xa_p, xa1_p);
@@ -608,7 +769,7 @@ void clahe_top(axis_t *src, axis_t *dst) {
 			lut15,
 	clipLimit);
 
-	interpolation_stream(src_buf, dst_stream,
+	interpolation_stream_2buf(src_buf, dst_stream,
 			lut0,
 			lut1,
 			lut2,
